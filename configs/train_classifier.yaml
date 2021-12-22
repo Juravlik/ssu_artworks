@@ -1,0 +1,119 @@
+train_path: "static/data/csv/train.csv"
+valid_path: "static/data/csv/valid.csv"
+
+# ------ index -------
+test_index_loader_path: "static/data/csv/train.csv" # "static/data/csv/train.csv"
+test_search_loader_path: "static/data/csv/valid.csv" # "static/data/csv/valid.csv"
+# ------ index -------
+
+
+root: "static/data/data"
+
+
+seed: 42
+root_to_save_model: "models/embedder_b0__fe_false__lr001__s25__m03__emb128___"
+device: 'cuda:0'
+updates_per_epoch: 0
+# means we will train on full dataset
+classes: 1925
+embedding_size: 128
+
+
+model:
+  type: searcharts.models.ArtEfficientnet
+  efficientnet: 'efficientnet-b0'
+  feature_extracting: False
+
+
+model_optimizer:
+  type: torch.optim.Adam
+  lr: 0.001
+
+
+model_scheduler:
+  type: torch.optim.lr_scheduler.ReduceLROnPlateau
+  factor: 0.3
+  mode: 'min'
+  verbose: True
+  patience: 0
+
+loss:
+  type: searcharts.models.losses.ArcMarginProduct
+  s: 25
+  m: 0.3
+
+
+fc_optimizer:
+  type: torch.optim.Adam
+  lr: 0.001
+
+
+fc_scheduler:
+  type: torch.optim.lr_scheduler.ReduceLROnPlateau
+  factor: 0.1
+  mode: 'min'
+  verbose: True
+  patience: 0
+
+
+criterion:
+  type: torch.nn.CrossEntropyLoss
+
+
+dataset:
+  type: searcharts.data.ArcFaceDataset
+  label_columns: ['class']
+  name_of_images: 'img.jpg'
+
+
+train_dataloader:
+  batch_size: 64
+  num_workers: 4
+  pin_memory: False
+
+valid_dataloader:
+  batch_size: 64
+  num_workers: 4
+  pin_memory: True
+# don't need to add shuffle because shuffle will always True in train data set and always False in valid and test data set
+
+
+index:
+  type: searcharts.validation.FlatFaissIndex
+
+evaluator:
+  metrics: [
+    [
+        type: searcharts.validation.OneRecallAtK,
+        params: [
+          [k: 1],
+          [k: 2],
+          [k: 5],
+          [k: 10],
+          [k: 20]
+        ]
+    ]
+  ]
+
+
+test_index_loader:
+  batch_size: 64
+  num_workers: 4
+  pin_memory: False
+
+
+test_search_loader:
+  batch_size: 64
+  num_workers: 4
+  pin_memory: False
+
+
+trainer:
+  type: searcharts.models.ArcFaceTrainer
+  n_epochs: 100
+  verbose: True
+  save_info_txt: True
+  earlystopping: True
+  es_delta: 0
+  es_patience: 15
+  es_mode: 'metrics'

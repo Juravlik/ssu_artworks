@@ -1,0 +1,22 @@
+body {
+font: sans-serif;
+}
+
+img {
+width: 30%;
+}
+
+.card {
+width: 100%;
+}
+
+.card-body{
+vertical-align: bottom;
+display: table-cell;
+vertical-align: bottom;
+}
+
+@media screen and (max-width: 575px)
+{
+img {width: 95%;}
+}

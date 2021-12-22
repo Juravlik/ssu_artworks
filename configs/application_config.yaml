@@ -1,0 +1,12 @@
+n_images: 20
+
+device: 'cuda'
+UPLOADED_PATH: 'static/uploads'
+CSV_PATH: 'static/data/csv/index.csv' #index #train
+DATA_PATH: 'static/data/data'
+
+embedder_checkpoint_path: "models/embedder_b0__fe_false__lr001__s25__m03__emb128/checkpoint.pt"
+ranking_model_path: 'models/embedder_b0__fe_false__lr001__s25__m03__emb128/ranking_model/faiss.index'
+
+index:
+  type: searcharts.validation.FlatFaissIndex
