@@ -1,4 +1,4 @@
-# Search for similar images [Work In Progress]
+# Search for similar paintings [Work In Progress]
 
 In scope of this project we are implementing style recognition in paintings.
 
@@ -62,3 +62,9 @@ Run below from root:
 `python -m searchplates.train_classifier`
 
 You can change settings using `configs/train_segmentation.yaml`
+
+## Examples
+
+![plot](./examples/1.png)
+![plot](./examples/2.png)
+![plot](./examples/3.png)
