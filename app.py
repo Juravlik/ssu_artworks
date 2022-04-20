@@ -3,6 +3,7 @@ from base64 import b64encode
 from datetime import timedelta
 from typing import Tuple, List
 
+import pandas as pd
 from flask import Flask, request, redirect, render_template, session, jsonify
 from flask_session import Session
 import csv
@@ -14,6 +15,7 @@ from io import BytesIO
 import cv2
 import io
 import sys
+
 
 from searcharts.utils import get_param_from_config, object_from_dict
 from searcharts.data import get_valid_aug_preproc
@@ -37,14 +39,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 config_path = os.path.join(basedir, 'configs/application_config.yaml')
 config = get_param_from_config(config_path)
 
-
 n_images = config.n_images
 device = torch.device(config.device)
 embedder_checkpoint_path = config.embedder_checkpoint_path
 UPLOADED_PATH = os.path.join(basedir, config.UPLOADED_PATH)
 CSV_PATH = config.CSV_PATH
 DATA_PATH = config.DATA_PATH
-
 
 print("Loading embedder")
 embedder_checkpoint = torch.load(embedder_checkpoint_path, map_location=device)
@@ -56,6 +56,7 @@ embedder.eval()
 preprocessing_for_embedder = get_valid_aug_preproc(embedder.get_preprocess_fn())
 class_embedder = Embedder(embedder, preprocessing_for_embedder, device)
 
+df = pd.read_csv(CSV_PATH, sep=';')
 
 indexer = object_from_dict(
     config.index,
@@ -88,9 +89,11 @@ def search_similar() -> Tuple[str, List[str]]:
         stream.close()
         target_image = np.array(image)
 
+
     dists, similar_paths = similarity_search.search_image(target_image,
                                                           n_images=n_images,
                                                           return_labels=False)
+
     similar_paths = similar_paths.tolist()
 
     file_object = io.BytesIO()
@@ -119,7 +122,9 @@ def index():
         if request.files or request.form:
             if request.files["image"].filename == "" and request.form["url"] == "":
                 return redirect('/')
+
             target_image, similar_paths = search_similar()
+
             session['paths'] = similar_paths
             session['target_image'] = target_image
 
@@ -127,12 +132,13 @@ def index():
     else:
         paths = session.get('paths')
         target_image = session.get('target_image')
+
         if paths and target_image:
             data = paths_to_data(paths)
 
             delete_sessions()
 
-            return render_template('index.html', target_image=target_image, data=data)
+            return render_template('index.html', target_image=target_image, data=data, age=define_age(data))
         else:
             return render_template('index.html')
 
@@ -143,22 +149,35 @@ def delete_sessions():
 
 
 def paths_to_data(paths):
-    all_data = []
-    with open(CSV_PATH, 'r') as inp:
-        for row in csv.reader(inp, delimiter=';'):
-            if row[0] in paths:
-                all_data.append([row[0], row[1].title(), row[2]])
+    global df
+
+    cur_df = df[df['imgId'].isin(paths)]
+
+    all_data = cur_df[['imgId', 'style', 'author', 'age']].values
+
     all_data_sort = []
+
     for path in paths:
         for data in all_data:
             if path in data:
-                all_data_sort.append(data)
+                all_data_sort.append(data.tolist())
+
     return all_data_sort
+
+
+def define_age(data):
+
+    data = [data[i][3] for i in range(len(data))]
+
+    res = np.nanmean(data)
+
+    if res > 0:
+        return int(res)
+    else:
+        return 1800
 
 
 print("Service-started")
 
-
 if __name__ == "__main__":
     app.run(debug=False, port=5000, host='0.0.0.0')
-

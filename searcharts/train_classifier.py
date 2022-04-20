@@ -9,6 +9,7 @@ from searcharts.utils import get_param_from_config, object_from_dict
 from searcharts.models import Evaluator
 from searcharts.utils import get_metrics_from_config
 
+
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 config_dir = os.path.normpath(os.path.join(SCRIPT_DIR, "../configs"))
 
@@ -126,9 +127,11 @@ def main(train_config: dict):
         config=train_config,
         evaluator=evaluator
     )
+
     trainer.train_model()
 
     # similarity_search.build_index(index_loader=test_index_loader)
+
     # similarity_search.index.save_ranking_model(path_to_save_ranking_model_path='/home/juravlik/PycharmProjects/ssu_artworks/models/embedder_b0__fe_false__lr001__s25__m03__emb128/ranking_model/')
 
 

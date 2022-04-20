@@ -11,7 +11,7 @@ root: "static/data/data"
 
 
 seed: 42
-root_to_save_model: "models/embedder_b0__fe_false__lr001__s25__m03__emb128___"
+root_to_save_model: "models/test_embedder_b0__fe_false__lr001__s25__m03__emb128___"
 device: 'cuda:0'
 updates_per_epoch: 0
 # means we will train on full dataset

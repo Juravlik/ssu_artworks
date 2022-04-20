@@ -23,6 +23,13 @@
 </div>
 
 {% if target_image %}
+
+    <div id="age-img" class="container-fluid body-content m-2 p-2">
+        <div class="center-block text-center">
+            <h5>Estimated year of painting: {{ age }}</h5>
+        </div>
+    </div>
+
     <div id="target-img" class="container-fluid body-content m-2 p-2">
         <div class="center-block text-center">
             <img src="{{ target_image }}" class="target_img">

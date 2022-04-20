@@ -4,7 +4,7 @@ import random
 import numpy as np
 import cv2
 
-IMAGE_SIZE = 224 # 300
+IMAGE_SIZE = 224 # 224
 
 
 def lock_deterministic(SEED=42):
@@ -38,25 +38,27 @@ def _get_validation_augmentation():
 def _get_training_augmentation():
     transforms = [
 
-        A.Blur(blur_limit=(3, 3), p=0.1),
+        # A.Blur(blur_limit=(3, 3), p=0.1),
 
-        A.OneOf(
-            [
-                A.ISONoise(color_shift=(0.05, 0.01), intensity=(0.1, 0.5), p=0.1),
-                A.IAAAdditiveGaussianNoise(p=0.1),
-                A.IAAPerspective(p=0.1),
-            ], p=0.3
-        ),
+        # A.OneOf(
+        #     [
+        #         A.ISONoise(color_shift=(0.05, 0.01), intensity=(0.1, 0.5), p=0.1),
+        #         A.IAAAdditiveGaussianNoise(p=0.1),
+        #         A.IAAPerspective(p=0.1),
+        #     ], p=0.3
+        # ),
+        #
+        # A.RandomBrightnessContrast(p=0.1),
+        #
+        # A.RandomRotate90(p=0.4),
+        #
+        # A.Flip(p=0.4),
 
-        A.RandomBrightnessContrast(p=0.1),
-
-        A.RandomRotate90(p=0.2),
-
-        A.Flip(p=0.2),
+        A.HorizontalFlip(p=0.5),
 
         _get_validation_augmentation(),
 
-        A.ShiftScaleRotate(border_mode=cv2.BORDER_CONSTANT, p=0.2),
+        # A.ShiftScaleRotate(border_mode=cv2.BORDER_CONSTANT, p=0.2),
 
     ]
 

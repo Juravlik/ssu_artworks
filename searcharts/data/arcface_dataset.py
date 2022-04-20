@@ -89,3 +89,5 @@ if __name__ == '__main__':
     for i in ds:
         print(i['label'], i['imgId'])
 
+        break
+

@@ -1,8 +1,9 @@
 n_images: 20
 
-device: 'cuda:0' #cpu
+device: 'cuda'
 UPLOADED_PATH: 'static/uploads'
 CSV_PATH: 'static/data/csv/age_index.csv' #index #train
+TEST_PATH: 'static/data/csv/test_age_art.csv'
 DATA_PATH: 'static/data/data'
 
 embedder_checkpoint_path: "models/embedder_b0__fe_false__lr001__s25__m03__emb128/checkpoint.pt"
