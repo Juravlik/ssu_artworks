@@ -4,6 +4,7 @@ from datetime import timedelta
 from typing import Tuple, List
 
 import pandas as pd
+from searcharts.utils.image_utils import open_image_RGB
 from flask import Flask, request, redirect, render_template, session, jsonify
 from flask_session import Session
 import csv
@@ -141,6 +142,29 @@ def index():
             return render_template('index.html', target_image=target_image, data=data, age=define_age(data))
         else:
             return render_template('index.html')
+
+
+@app.route('/api/getApiToken/', methods=['POST'])
+def response_text():
+    content = request.json
+    print(content)
+    return jsonify({"token": 'LOL'})
+
+
+@app.route('/api/uploadFile/', methods=['POST'])
+def response_images():
+    path_target_image = request.json['path_target_image']
+
+    target_image = open_image_RGB(path_target_image)
+
+    dists, similar_paths = similarity_search.search_image(target_image,
+                                                          n_images=n_images,
+                                                          return_labels=False)
+
+    data = paths_to_data(similar_paths)
+
+    return jsonify({"similar_paths": data, "age": define_age(data)})
+
 
 
 def delete_sessions():

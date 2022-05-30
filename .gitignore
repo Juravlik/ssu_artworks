@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+/loaded_images
 .Python
 /data/
 /models/

@@ -157,4 +157,5 @@ if __name__ == '__main__':
     index.add_batch(new_array)
     index.build_index()
     print(index.predict(np.array([[1, 2, 3, 4]]), 2))
-    print()
+    print(len(index))
+

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-center align-items-center container">
+<form action="/" method="POST" enctype="multipart/form-data">
+     <div class="form-group mb-2">
+         <label class="btn btn-primary btn-block btn-outlined" for="image">upload an engraving</label>
+        <input type="file" class="form-control-file form-control-lg" name="image" id="image" style="display: none">
+     </div>
+     <div class="input-group mb-2">
+         <div class="input-group-prepend">
+             <span class="input-group-text" id="basic-addon3">url</span>
+         </div>
+         <div>
+             <input type="url" class="form-control" id="basic-url" aria-describedby="basic-addon3" name="url">
+        </div>
+     </div>
+    <button type="submit" class="btn btn-dark btn-lg btn-block">Get a prediction</button>
+</form>
+</div>
+
+{% if target_image %}
+
+    <div id="target-img" class="container-fluid body-content m-2 p-2">
+        <div class="center-block text-center">
+            <img src="{{ target_image }}" class="target_img">
+        </div>
+    </div>
+
+    <div id="age-img" class="container-fluid body-content m-2 p-2">
+        <div class="center-block text-center">
+            <h3>{{ text1 }}</h3>
+            <h3>{{ text2 }}</h3>
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock %}
