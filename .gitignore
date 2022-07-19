@@ -183,3 +183,6 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Telegram token
+token.py
