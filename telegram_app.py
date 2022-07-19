@@ -160,11 +160,6 @@ def send_final_response(message, raw_response: str):
 
 
 if __name__ == '__main__':
-    from time import sleep
 
-    print("Start to running BOT")
-    for i in range(1, 0, -1):
-        print(f"Bot will run after {i} seconds!")
-        sleep(1)
-    print("Let's go")
+    print("Bot is running")
     bot.polling(none_stop=True)

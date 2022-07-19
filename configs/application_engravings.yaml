@@ -1,7 +1,0 @@
-device: 'cuda:0' #cpu
-UPLOADED_PATH: 'static/uploads'
-
-model_checkpoint_path: "models/engravings_models/test_new_sets_b3_new_augs_0.95486/checkpoint.pt"
-
-model:
-  type: engravings.models.EngravingsEffnet

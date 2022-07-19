@@ -1,5 +1,0 @@
-device: 'cpu'
-
-DATA_PATH: 'static/data/engravings/gp_wk/valid'
-
-model_checkpoint_path: "models/engravings_models/test_new_sets_b3_new_augs_0.95486/checkpoint.pt"

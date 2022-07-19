@@ -3,17 +3,21 @@ import numpy as np
 import torch
 from torch.cuda.amp import autocast, GradScaler
 from tqdm import tqdm
+from typing import Dict, List, Tuple, Union, Callable, Optional
 
 from searcharts.models import Evaluator
 
 
 class ArcFaceTrainer:
+    """
+    The class is used to represent the metric learning training of the model with ArcFace (or analogues)
+    """
     def __init__(self, model, metric_model, criterion, model_optimizer, fc_optimizer,
                  n_epochs, trainloader, validloader, test_index_loader, test_search_loader,
-                 root_to_save_model, config, model_scheduler, fc_scheduler, evaluator: Evaluator=None,
-                 device=torch.device('cuda'), verbose=True, save_info_txt=False,
-                 earlystopping=True, es_delta=0, es_patience=5, es_mode='loss'
-                 ):
+                 root_to_save_model: str, config: Dict, model_scheduler, fc_scheduler, evaluator: Evaluator = None,
+                 device: torch.device = torch.device('cuda'), verbose: bool = True, save_info_txt: bool = False,
+                 earlystopping: bool = True, es_delta: float = 0, es_patience: int = 5, es_mode: str = 'loss'):
+
         self.evaluator = evaluator
         self.test_search_loader = test_search_loader
         self.test_index_loader = test_index_loader
@@ -44,14 +48,14 @@ class ArcFaceTrainer:
         self.scaler = GradScaler()
         # ----
 
-    def _get_metrics(self):
+    def _get_metrics(self) -> np.array:
         self.model.eval()
         self.evaluator.build_index(self.test_index_loader)
         metrics = self.evaluator.compute_metrics(self.test_search_loader)
         self.evaluator.reset()
         return metrics
 
-    def _step(self, data):
+    def _step(self, data: Dict):
         images, labels = data['image'], data['label']
 
         inputs, labels = images.to(self.device), labels.to(self.device)
@@ -62,7 +66,7 @@ class ArcFaceTrainer:
             loss = self.criterion(outputs, labels)
         return loss
 
-    def _train_step(self):
+    def _train_step(self) -> float:
         self.model.train()
         self.metric_model.train()
         losses = []
@@ -85,7 +89,7 @@ class ArcFaceTrainer:
             self.scaler.update()
         return np.average(losses)
 
-    def _valid_step(self):
+    def _valid_step(self) -> float:
         self.model.eval()
         self.metric_model.eval()
         losses = []
@@ -127,7 +131,7 @@ class ArcFaceTrainer:
 
         self.load_model()
 
-    def _print_step_statistic(self, train_loss, valid_loss, metrics):
+    def _print_step_statistic(self, train_loss: float, valid_loss: float, metrics: np.array):
         if self.verbose:
             epoch_len = len(str(self.n_epochs))
             print_msg = (f'[{self.epoch:>{epoch_len}}/{self.n_epochs:>{epoch_len}}] ' +
@@ -139,7 +143,7 @@ class ArcFaceTrainer:
             self._save_info_about_training(text=print_msg)
             print(print_msg)
 
-    def _early_stopping_valid_loss(self, indicator):
+    def _early_stopping_valid_loss(self, indicator: Union[np.array, float]):
         if self.earlystopping:
             if type(indicator) == np.array:
                 if self.es_val_loss_min is np.Inf:
@@ -176,7 +180,7 @@ class ArcFaceTrainer:
                     self.es_counter = 0
                     self.val_loss_min = indicator
 
-    def _save_info_about_training(self, text, file_name='info_about_training.txt'):
+    def _save_info_about_training(self, text: str, file_name: str = 'info_about_training.txt'):
         if self.save_info_txt:
             if not os.path.exists(self.root_to_save_model):
                 os.makedirs(self.root_to_save_model)
@@ -184,7 +188,7 @@ class ArcFaceTrainer:
             with open(full_path, "a") as file:
                 file.write(text + '\n')
 
-    def save_checkpoint(self, file_name='checkpoint.pt'):
+    def save_checkpoint(self, file_name: str = 'checkpoint.pt'):
         if self.verbose:
             print('Saving model')
         if not os.path.exists(self.root_to_save_model):
@@ -203,7 +207,7 @@ class ArcFaceTrainer:
             'config': self.config,
         }, full_path_file)
 
-    def load_model(self, file_name='checkpoint.pt'):
+    def load_model(self, file_name: str = 'checkpoint.pt'):
         full_path_file = os.path.join(self.root_to_save_model, file_name)
 
         checkpoint = torch.load(full_path_file, map_location=self.device)

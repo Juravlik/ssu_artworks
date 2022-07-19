@@ -3,21 +3,23 @@ import torch
 import random
 import numpy as np
 import cv2
+from typing import Dict, List, Tuple, Union, Callable, Optional
+
 
 IMAGE_SIZE = 224 # 300
 
 
-def lock_deterministic(SEED=42):
-    np.random.seed(SEED)
-    random.seed(SEED)
-    torch.manual_seed(SEED)
-    torch.cuda.manual_seed(SEED)
-    torch.cuda.manual_seed_all(SEED)
+def lock_deterministic(seed: int =42):
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
 
-def add_padding_to_square(x, **kwargs):
+def add_padding_to_square(x: np.array, **kwargs):
 
     max_side = max(x.shape)
 
@@ -63,7 +65,7 @@ def _get_training_augmentation():
     return A.Compose(transforms)
 
 
-def get_train_aug_preproc(preprocessing_fn):
+def get_train_aug_preproc(preprocessing_fn: Callable):
 
     return A.Compose([*_get_training_augmentation()] + [*_get_preprocessing(preprocessing_fn)])
 
@@ -72,7 +74,7 @@ def get_valid_aug_preproc(preprocessing_fn):
     return A.Compose([*_get_validation_augmentation()] + [*_get_preprocessing(preprocessing_fn)])
 
 
-def to_tensor(x, **kwargs):
+def to_tensor(x: np.array, **kwargs):
     return x.transpose(2, 0, 1).astype('float32')
 
 

@@ -84,19 +84,6 @@ def main(train_config: dict):
 
     embedder = Embedder(model)
 
-    # ####
-    # embedder_checkpoint = torch.load('/home/juravlik/PycharmProjects/ssu_artworks/models/embedder_b0__fe_false__lr001__s25__m03__emb128/checkpoint.pt',
-    #                                  map_location=DEVICE)
-    # embedding_size = embedder_checkpoint['config']['embedding_size']
-    #
-    # embedder = object_from_dict(embedder_checkpoint['config']['model'], vector_size=embedding_size)
-    # embedder.load_state_dict(embedder_checkpoint['model'])
-    # embedder.to(DEVICE)
-    # embedder.eval()
-    #
-    # embedder = Embedder(embedder, device=DEVICE)
-    # ####
-
     index = object_from_dict(train_config.index, dimension=embedding_size, device=DEVICE)
 
     similarity_search = SimilaritySearch(
@@ -129,10 +116,6 @@ def main(train_config: dict):
     )
 
     trainer.train_model()
-
-    # similarity_search.build_index(index_loader=test_index_loader)
-
-    # similarity_search.index.save_ranking_model(path_to_save_ranking_model_path='/home/juravlik/PycharmProjects/ssu_artworks/models/embedder_b0__fe_false__lr001__s25__m03__emb128/ranking_model/')
 
 
 if __name__ == "__main__":

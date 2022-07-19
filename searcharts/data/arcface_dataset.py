@@ -2,6 +2,7 @@ from torch.utils.data import DataLoader, Dataset
 import pandas as pd
 import os
 from searcharts.utils import open_image_RGB
+from typing import Dict, List, Tuple, Union, Callable, Optional
 
 
 
@@ -49,7 +50,7 @@ class ArcFaceDataset(Dataset):
             self.labels[pattern] = len(self.labels)
         return self.labels[pattern]
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> Dict:
         row = self.plates_data.iloc[index]
         imgId = row['imgId']
         img_path = os.path.join(
@@ -73,7 +74,7 @@ class ArcFaceDataset(Dataset):
             return self.length
         return self.plates_data.shape[0]
 
-    def get_dataloader(self, **kwargs):
+    def get_dataloader(self, **kwargs) -> DataLoader:
         return DataLoader(self, **kwargs)
 
 
