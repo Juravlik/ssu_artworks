@@ -151,11 +151,10 @@ if __name__ == '__main__':
 
     array = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
     index.add_batch(array)
-    index.build_index()
-    index.reset()
-    new_array = np.array([[9, 10, 11, 12], [13, 14, 15, 16]])
+    # index.build_index()
+    # index.reset()
+    new_array = np.array([[9, 10, 11, 12]])
     index.add_batch(new_array)
     index.build_index()
-    print(index.predict(np.array([[1, 2, 3, 4]]), 2))
-    print(len(index))
+    print(index.predict(np.array([[1, 2, 3, 4]]), 10))
 

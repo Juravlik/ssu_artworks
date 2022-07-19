@@ -1,8 +1,7 @@
 import os
 from base64 import b64encode
 from datetime import timedelta
-from typing import Tuple, List
-
+from typing import Dict, List, Tuple, Union, Callable, Optional
 import pandas as pd
 from searcharts.utils.image_utils import open_image_RGB
 from flask import Flask, request, redirect, render_template, session, jsonify
@@ -20,7 +19,6 @@ import sys
 
 from searcharts.utils import get_param_from_config, object_from_dict
 from searcharts.data import get_valid_aug_preproc
-from segmentation_models_pytorch.encoders import get_preprocessing_fn
 from searcharts.models import Embedder, SimilaritySearch
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
@@ -172,7 +170,7 @@ def delete_sessions():
     session.pop('target_image', None)
 
 
-def paths_to_data(paths):
+def paths_to_data(paths: List[str]) -> List[List[str]]:
     global df
 
     cur_df = df[df['imgId'].isin(paths)]
@@ -189,7 +187,7 @@ def paths_to_data(paths):
     return all_data_sort
 
 
-def define_age(data):
+def define_age(data: List[str]) -> int:
 
     data = [data[i][3] for i in range(len(data))]
 
