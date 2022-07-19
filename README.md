@@ -3,7 +3,7 @@
 **In scope of this project, a search for similar paintings and determination of the year of painting were implemented. For ease of use, you can try a Flask app or [telegram bot](https://telegram.me/ssu_artworks_bot) (please ping me if I disabled the bot and you want to test it).**
 
 ### 1. Data:
-Images and meta-information from the [wikiart.org](https://www.wikiart.org/) were used as data for training and search. As a class, the intersection of the author and the style of the painting was used, since it is precisely such paintings that are most similar to each other.
+Images and meta-information from the [wikiart.org](https://www.wikiart.org/) were used to train the model and create Faiss index. As a class, the intersection of the author and the style of the painting was used, since it is precisely such paintings that are most similar to each other.
 
 Dataset:
 - ~80000 images
